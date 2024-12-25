@@ -899,7 +899,7 @@ async def load_config():
         await DbManager().trunc_table("tasks")
 
     STOP_DUPLICATE = environ.get("STOP_DUPLICATE", "")
-    STOP_DUPLICATE = STOP_DUPLICATE.lower() == "true"
+    STOP_DUPLICATE = STOP_DUPLICATE.lower() == "false"
 
     IS_TEAM_DRIVE = environ.get("IS_TEAM_DRIVE", "")
     IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == "true"
@@ -911,7 +911,7 @@ async def load_config():
     WEB_PINCODE = WEB_PINCODE.lower() == "true"
 
     AS_DOCUMENT = environ.get("AS_DOCUMENT", "")
-    AS_DOCUMENT = AS_DOCUMENT.lower() == "true"
+    AS_DOCUMENT = AS_DOCUMENT.lower() == "false"
 
     EQUAL_SPLITS = environ.get("EQUAL_SPLITS", "")
     EQUAL_SPLITS = EQUAL_SPLITS.lower() == "true"
@@ -1023,10 +1023,10 @@ async def load_config():
             "JD_EMAIL": JD_EMAIL,
             "JD_PASS": JD_PASS,
             "LEECH_DUMP_CHAT": LEECH_DUMP_CHAT,
+            "MIRROR_LOG_CHAT": MIRROR_LOG_CHAT,
             "LEECH_FILENAME_PREFIX": LEECH_FILENAME_PREFIX,
             "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
             "MEDIA_GROUP": MEDIA_GROUP,
-            "MIRROR_LOG_CHAT": MIRROR_LOG_CHAT,
             "MIXED_LEECH": MIXED_LEECH,
             "NAME_SUBSTITUTE": NAME_SUBSTITUTE,
             "OWNER_ID": OWNER_ID,
