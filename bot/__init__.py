@@ -297,10 +297,10 @@ RSS_DELAY = environ.get("RSS_DELAY", "")
 RSS_DELAY = 600 if len(RSS_DELAY) == 0 else int(RSS_DELAY)
 
 TORRENT_TIMEOUT = environ.get("TORRENT_TIMEOUT", "")
-TORRENT_TIMEOUT = "" if len(TORRENT_TIMEOUT) == 0 else int(TORRENT_TIMEOUT)
+TORRENT_TIMEOUT = "600" if len(TORRENT_TIMEOUT) == 0 else int(TORRENT_TIMEOUT)
 
 QUEUE_ALL = environ.get("QUEUE_ALL", "")
-QUEUE_ALL = "" if len(QUEUE_ALL) == 0 else int(QUEUE_ALL)
+QUEUE_ALL = "7" if len(QUEUE_ALL) == 0 else int(QUEUE_ALL)
 
 QUEUE_DOWNLOAD = environ.get("QUEUE_DOWNLOAD", "")
 QUEUE_DOWNLOAD = "" if len(QUEUE_DOWNLOAD) == 0 else int(QUEUE_DOWNLOAD)
@@ -324,7 +324,7 @@ WEB_PINCODE = environ.get("WEB_PINCODE", "")
 WEB_PINCODE = WEB_PINCODE.lower() == "true"
 
 AS_DOCUMENT = environ.get("AS_DOCUMENT", "")
-AS_DOCUMENT = AS_DOCUMENT.lower() == "true"
+AS_DOCUMENT = AS_DOCUMENT.lower() == "false"
 
 EQUAL_SPLITS = environ.get("EQUAL_SPLITS", "")
 EQUAL_SPLITS = EQUAL_SPLITS.lower() == "true"
@@ -499,6 +499,7 @@ config_dict = {
     "AS_DOCUMENT": AS_DOCUMENT,
     "AUTHORIZED_CHATS": AUTHORIZED_CHATS,
     "BASE_URL": BASE_URL,
+    "MIRROR_LOG_CHAT":MIRROR_LOG_CHAT,
     "BASE_URL_PORT": BASE_URL_PORT,
     "BOT_TOKEN": BOT_TOKEN,
     "CMD_SUFFIX": CMD_SUFFIX,
