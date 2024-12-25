@@ -120,37 +120,52 @@ class TelegramDownloadHelper:
         )
 
         if media is not None:
-            async with global_lock:
-                download = media.file_unique_id not in GLOBAL_GID
+    async with global_lock:
+        download = media.file_unique_id not in GLOBAL_GID
 
-            if download:
-                if self._listener.name == "":
-                    self._listener.name = (
-                        media.file_name if hasattr(media, "file_name") else "None"
+    if download:
+        if self._listener.name == "":
+            self._listener.name = (
+                media.file_name if hasattr(media, "file_name") else "None"
+            )
+        else:
+            path = path + self._listener.name
+        self._listener.size = media.file_size
+        gid = media.file_unique_id
+
+        msg, button = await stop_duplicate_check(self._listener)
+        if msg:
+            await self._listener.onDownloadError(msg, button)
+            return
+
+        try:
+            # Pastikan check_running_tasks mengembalikan nilai yang benar
+            add_to_queue, event = await check_running_tasks(self._listener)
+            
+            if add_to_queue:
+                LOGGER.info(f"Added to Queue/Download: {self._listener.name}")
+                async with task_dict_lock:
+                    task_dict[self._listener.mid] = QueueStatus(
+                        self._listener, gid, "dl"
                     )
-                else:
-                    path = path + self._listener.name
-                self._listener.size = media.file_size
-                gid = media.file_unique_id
-
-                msg, button = await stop_duplicate_check(self._listener)
-                if msg:
-                    await self._listener.onDownloadError(msg, button)
-                    return
-
-                add_to_queue, event = await check_running_tasks(self._listener)
-                if add_to_queue:
-                    LOGGER.info(f"Added to Queue/Download: {self._listener.name}")
-                    async with task_dict_lock:
-                        task_dict[self._listener.mid] = QueueStatus(
-                            self._listener, gid, "dl"
-                        )
-                    await self._listener.onDownloadStart()
-                    if self._listener.multi <= 1:
-                        await sendStatusMessage(self._listener.message)
+                await self._listener.onDownloadStart()
+                if self._listener.multi <= 1:
+                    await sendStatusMessage(self._listener.message)
+                
+                # Tunggu event
+                if event:  # Pastikan event tidak None
                     await event.wait()
-                    if self._listener.isCancelled:
-                        return
+                    
+                if self._listener.isCancelled:
+                    return
+                    
+                async with queue_dict_lock:
+                    non_queued_dl.add(self._listener.mid)
+                    
+        except Exception as e:
+            LOGGER.error(f"Error in download process: {str(e)}")
+            await self._listener.onDownloadError(f"Download error: {str(e)}")
+            return
                     async with queue_dict_lock:
                         non_queued_dl.add(self._listener.mid)
 
