@@ -81,11 +81,6 @@ async def check_running_tasks(listener, state="dl"):
     async with queue_dict_lock:
         if state == "up" and listener.mid in non_queued_dl:
             non_queued_dl.remove(listener.mid)
-        
-        # Pastikan all_limit dan state_limit adalah integer
-        all_limit = int(all_limit) if all_limit else 0  # Convert ke int jika ada nilai
-        state_limit = int(state_limit) if state_limit else 0  # Convert ke int jika ada nilai
-        
         if (
             (all_limit or state_limit)
             and not listener.forceRun
@@ -96,11 +91,10 @@ async def check_running_tasks(listener, state="dl"):
             up_count = len(non_queued_up)
             t_count = dl_count if state == "dl" else up_count
             is_over_limit = (
-                all_limit > 0  # Pastikan all_limit ada nilainya
+                all_limit
                 and dl_count + up_count >= all_limit
                 and (not state_limit or t_count >= state_limit)
-            ) or (state_limit > 0 and t_count >= state_limit)  # Pastikan state_limit ada nilainya
-            
+            ) or (state_limit and t_count >= state_limit)
             if is_over_limit:
                 event = Event()
                 if state == "dl":
